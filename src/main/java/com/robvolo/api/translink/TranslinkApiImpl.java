@@ -28,6 +28,38 @@ class TranslinkApiImpl implements TranslinkApi {
 		return sendRequest(request, Stop.class);
 	}
 
+	@Override
+	public Stop[] getStops(float lat, float lon) throws IOException, RequestException {
+		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+				"?apikey=" + apiKey +
+				"&lat=" + lat +
+				"&long=-" + lon)
+				.get().build();
+		return sendRequest(request, Stop[].class);
+	}
+
+	@Override
+	public Stop[] getStops(float lat, float lon, int radius) throws IOException, RequestException {
+		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+				"?apikey=" + apiKey +
+				"&lat=" + lat +
+				"&long=-" + lon +
+				"&radius=" + radius)
+				.get().build();
+		return sendRequest(request, Stop[].class);
+	}
+
+	@Override
+	public Stop[] getStopsOnRoute(float lat, float lon, int route) throws IOException, RequestException {
+		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+				"?apikey=" + apiKey +
+				"&lat=" + lat +
+				"&long=-" + lon +
+				"&routeNo=" + route)
+				.get().build();
+		return sendRequest(request, Stop[].class);
+	}
+
 	private <T> T sendRequest(Request request, Class<T> pojo) throws IOException, RequestException {
 		Response response = httpClient.newCall(request).execute();
 

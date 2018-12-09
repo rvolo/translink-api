@@ -31,5 +31,41 @@ public interface TranslinkApi {
 	 */
 	Stop getStopInfo(int stopNumber) throws IOException, RequestException;
 
+	/**
+	 * Returns stops near latitude/longitude coordinates
+	 *
+	 * @param lat latitude
+	 * @param lon longitude
+	 * @return list of stops
+	 * @throws IOException      connection error
+	 * @throws RequestException error reading response
+	 * @since 0.0.1
+	 */
+	Stop[] getStops(float lat, float lon) throws IOException, RequestException;
 
+	/**
+	 * Returns stops near latitude/longitude coordinates in a certain radius
+	 *
+	 * @param lat    latitude
+	 * @param lon    longitude
+	 * @param radius distance from lat & long
+	 * @return list of stops
+	 * @throws IOException      connection error
+	 * @throws RequestException error reading response
+	 * @since 0.0.1
+	 */
+	Stop[] getStops(float lat, float lon, int radius) throws IOException, RequestException;
+
+	/**
+	 * Returns stops near latitude/longitude coordinates filtered by the current route number
+	 *
+	 * @param lat   latitude
+	 * @param lon   longitude
+	 * @param route filter by route number
+	 * @return list of stops
+	 * @throws IOException      connection error
+	 * @throws RequestException error reading response
+	 * @since 0.0.1
+	 */
+	Stop[] getStopsOnRoute(float lat, float lon, int route) throws IOException, RequestException;
 }
