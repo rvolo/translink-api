@@ -14,23 +14,22 @@ class TranslinkApiImpl implements TranslinkApi {
 	private ObjectMapper mapper = new ObjectMapper();
 	private OkHttpClient httpClient = new OkHttpClient();
 
-	TranslinkApiImpl(String apiKey) {
-		if (apiKey == null) {
-			throw new NullPointerException();
-		}
+	private final String baseUrl;
 
+	TranslinkApiImpl(String baseUrl, String apiKey) {
+		this.baseUrl = baseUrl;
 		this.apiKey = apiKey;
 	}
 
 	@Override
 	public Stop getStopInfo(int stopNumber) throws IOException, RequestException {
-		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops/" + stopNumber + "?apikey=" + apiKey).get().build();
+		Request request = createRequestBuilder().url(baseUrl + "/stops/" + stopNumber + "?apikey=" + apiKey).get().build();
 		return sendRequest(request, Stop.class);
 	}
 
 	@Override
 	public Stop[] getStops(float lat, float lon) throws IOException, RequestException {
-		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+		Request request = createRequestBuilder().url(baseUrl + "/stops" +
 				"?apikey=" + apiKey +
 				"&lat=" + lat +
 				"&long=-" + lon)
@@ -40,7 +39,7 @@ class TranslinkApiImpl implements TranslinkApi {
 
 	@Override
 	public Stop[] getStops(float lat, float lon, int radius) throws IOException, RequestException {
-		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+		Request request = createRequestBuilder().url(baseUrl + "/stops" +
 				"?apikey=" + apiKey +
 				"&lat=" + lat +
 				"&long=-" + lon +
@@ -51,7 +50,7 @@ class TranslinkApiImpl implements TranslinkApi {
 
 	@Override
 	public Stop[] getStopsOnRoute(float lat, float lon, int route) throws IOException, RequestException {
-		Request request = createRequestBuilder().url("http://api.translink.ca/rttiapi/v1/stops" +
+		Request request = createRequestBuilder().url(baseUrl + "/stops" +
 				"?apikey=" + apiKey +
 				"&lat=" + lat +
 				"&long=-" + lon +
