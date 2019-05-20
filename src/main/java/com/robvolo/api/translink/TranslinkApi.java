@@ -17,24 +17,28 @@ public interface TranslinkApi {
 	 * @return new api client
 	 */
 	static TranslinkApi createNew(String api) {
-		return createNew("http://api.translink.ca/rttiapi/v1/", api);
+		return createNew("http://api.translink.ca", "/rttiapi/v1", api);
 	}
 
 	/**
 	 * Creates a new instance of the translink api with a new base url and api key
 	 *
-	 * @param baseUrl base url path ex: http://api.translink.ca/rttiapi/v1/
-	 * @param api     api key from translink
+	 * @param hostname server hostname ex. http://api.translink.ca
+	 * @param apiPath  path to api base path ex. /rttiapi/v1/
+	 * @param apiKey   api key from translink
 	 * @return new api client
 	 */
-	static TranslinkApi createNew(String baseUrl, String api) {
-		if (baseUrl == null || baseUrl.isEmpty()) {
-			throw new IllegalArgumentException("baseUrl cannot be a blank string");
+	static TranslinkApi createNew(String hostname, String apiPath, String apiKey) {
+		if (hostname == null || hostname.isEmpty()) {
+			throw new IllegalArgumentException("String argument for hostname is invalid");
 		}
-		if (api == null || api.isEmpty()) {
-			throw new IllegalArgumentException("Api key cannot be a ");
+		if (apiPath == null || apiPath.isEmpty()) {
+			throw new IllegalArgumentException("String argument for apiPath is invalid");
 		}
-		return new TranslinkApiImpl(baseUrl, api);
+		if (apiKey == null || apiKey.isEmpty()) {
+			throw new IllegalArgumentException("String argument for apiKey is invalid");
+		}
+		return new TranslinkApiImpl(new TranslinkUrlFactory(hostname, apiPath, apiKey));
 	}
 
 	/**
@@ -58,7 +62,7 @@ public interface TranslinkApi {
 	 * @throws RequestException error reading response
 	 * @since 0.0.1
 	 */
-	Stop[] getStops(float lat, float lon) throws IOException, RequestException;
+	Stop[] getStops(double lat, double lon) throws IOException, RequestException;
 
 	/**
 	 * Returns stops near latitude/longitude coordinates in a certain radius
@@ -71,7 +75,7 @@ public interface TranslinkApi {
 	 * @throws RequestException error reading response
 	 * @since 0.0.1
 	 */
-	Stop[] getStops(float lat, float lon, int radius) throws IOException, RequestException;
+	Stop[] getStops(double lat, double lon, int radius) throws IOException, RequestException;
 
 	/**
 	 * Returns stops near latitude/longitude coordinates filtered by the current route number
@@ -84,5 +88,31 @@ public interface TranslinkApi {
 	 * @throws RequestException error reading response
 	 * @since 0.0.1
 	 */
-	Stop[] getStopsOnRoute(float lat, float lon, int route) throws IOException, RequestException;
+	Stop[] getStopsOnRoute(double lat, double lon, String route) throws IOException, RequestException;
+
+	/**
+	 * Gets the next bus estimates for a particular stop.
+	 *
+	 * @param stopNum stop number
+	 * @return Returns schedule data if estimates are not available
+	 * @throws IOException      connection error
+	 * @throws RequestException error reading response
+	 * @since 0.0.1
+	 */
+	StopEstimate[] getStopEstimate(int stopNum) throws IOException, RequestException;
+
+	/**
+	 * Gets the next bus estimates for a particular stop.
+	 *
+	 * @param stopNum   A five-digit stop number
+	 * @param busCount  The number of buses to return
+	 * @param timeFrame The search time frame in minutes
+	 * @param routeNum  Search for stops specific to route
+	 * @return search for stops specific to route
+	 * @throws IOException      connection error
+	 * @throws RequestException error reading response
+	 * @since 0.0.1
+	 */
+	StopEstimate[] getStopEstimate(int stopNum, Integer busCount, Integer timeFrame, String routeNum) throws IOException, RequestException;
+
 }
